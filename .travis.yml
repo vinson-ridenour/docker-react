@@ -14,4 +14,4 @@ before_install:
 # commands necessary to run our test suite - Travis will be watching the output of these and if any get a
 # return status code of 0, Travis will assume code is broken
 script:
-  - docker run morgenes23/react-app npm run test -- --coverage
+  - docker run morgenes23/docker-react npm run test -- --coverage
