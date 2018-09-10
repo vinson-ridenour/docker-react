@@ -15,3 +15,33 @@ before_install:
 # return status code of 0, Travis will assume code is broken
 script:
   - docker run morgenes23/docker-react npm run test -- --coverage
+
+# this portion will tell Travis to deploy to AWS - some laborious commands coming!
+deploy:
+  # Travis comes pre-configured to deploy to a handful of providers
+  provider: elasticbeanstalk
+  # region depends on where you originally created EB instance (found in URL on EB dashboard - Docker-env.fznyypimpj.us-east-2.elasticbeanstalk.com)
+  region: "us-east-2"
+  # name of app, same name as created in EB dashboard (take it letter for letter)
+  app: "docker"
+  # environment name (Docker-env)
+  env: "Docker-env"
+  # when Travis gets all your code into 1 zip file, copies it into an S3 bucket which is bucket_name, found under Services top nav, go to S3, find region (us-east-2), get full name 
+  bucket_name: "elasticbeanstalk-us-east-2-218183310905"
+  # same as app name - folder won't be created in S3 until the first deploy
+  bucket_path: "docker"
+  # only deploy when master branch is pushed (not feature branch)
+  on:
+    branch: master
+  # search iam in AWS (Identity and Access Management), link API keys to TravisCI from AWS -> Users (will be used by 
+  # TravisCI -> add user -> username: docker-react-travis-ci (anything) -> check Programmatic access box -> don't 
+  # check AWS Managment Console access) -> Next -> Attach existing policies directly (permissions) -> search beanstalk
+  # -> check box next to "Provides full access to AWS Elastic..." -> Next -> Create User -> secret access key will
+  # only be shown 1 time (copy it down!)
+  # Go to Travis CI dashboard of project, More Options, Settings, Environment variables section -> Travis CI will
+  # encrypt and store secret key and access key -> create AWS_ACCESS_KEY and AWS_SECRET_KEY -> Add
+  
+  # tell Travis to get the keys from local environment config
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
