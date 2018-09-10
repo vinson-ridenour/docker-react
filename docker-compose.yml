@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  # 1st container
+  react-app:
+    build:
+      # specifies where we want files/folders for this image to be pulled from
+      context: .
+      # location of dockerfile to be used to construct the image
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+  # 2nd container
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    # overrides npm run start command
+    command: ["npm", "run", "test"]
