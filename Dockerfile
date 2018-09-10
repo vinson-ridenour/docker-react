@@ -14,6 +14,8 @@ RUN npm run build
 # FROM statement starts the 2nd phase
 
 FROM nginx
+# allows AWS EB to see this and map port 80
+EXPOSE 80
 # saying I want to copy something over from the builder phase - copying /app/build folder TO /usr/share/nginx/html (from nginx image docker hub)
 COPY --from=builder /app/build /usr/share/nginx/html
 
